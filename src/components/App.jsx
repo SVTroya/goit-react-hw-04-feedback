@@ -12,21 +12,15 @@ export function App() {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
+  const mapState = {
+    good: setGood,
+    neutral: setNeutral,
+    bad: setBad,
+  };
+
   function handleFeedbackClick({ target }) {
     target.blur();
-
-    switch (target.name) {
-      case GOOD:
-        setGood(good + 1)
-        return
-      case NEUTRAL:
-        setNeutral(neutral + 1)
-        return
-      case BAD:
-        setBad(bad + 1)
-        return
-      default: return;
-    }
+    mapState[target.name](prev => prev + 1);
   }
 
   function countTotalFeedback() {
