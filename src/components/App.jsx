@@ -1,54 +1,59 @@
-import { Component } from 'react';
 import { FormWrapper } from './App.styled';
 import { Section } from './Section/Section';
 import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
 import { Statistics } from './Statistics/Statistics';
-import { BAD, GOOD, NEUTRAL } from '../assets/FeedbackType';
+import { GOOD, NEUTRAL, BAD } from '../assets/FeedbackType';
 import { Notification } from './Notification/Notification';
+import { useState } from 'react';
 
-export class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
-  };
+export function App() {
 
-  onFeedbackClick = (target) => {
-    if (target.nodeName !== 'BUTTON') {
-      console.log(target.nodeName);
-      return;
-    }
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
 
+  function handleFeedbackClick({ target }) {
     target.blur();
-    this.setState(state => ({ [target.dataset.type]: state[target.dataset.type] + 1 }));
-  };
 
-  countTotalFeedback = () => (this.state.good + this.state.neutral + this.state.bad);
-
-  countPositiveFeedbackPercentage = () => (
-    Math.round((this.state.good / (this.state.good + this.state.neutral + this.state.bad) * 100) || 0)
-  );
-
-  render() {
-    return (
-      <FormWrapper>
-        <Section title={'Did you like our cafe? Please leave feedback.'} fontSize='50px'>
-          <FeedbackOptions options={[GOOD, NEUTRAL, BAD]} onLeaveFeedback={this.onFeedbackClick} />
-        </Section>
-        {
-          this.countTotalFeedback()
-            ? (
-              <Section title={'Statistics'} fontSize='40px'>
-                <Statistics good={this.state.good}
-                            neutral={this.state.neutral}
-                            bad={this.state.bad}
-                            total={this.countTotalFeedback}
-                            positivePercentage={this.countPositiveFeedbackPercentage} />
-              </Section>
-            )
-            : <Notification message='We realy wait for your feedback!' />
-        }
-      </FormWrapper>
-    );
+    switch (target.name) {
+      case GOOD:
+        setGood(good + 1)
+        return
+      case NEUTRAL:
+        setNeutral(neutral + 1)
+        return
+      case BAD:
+        setBad(bad + 1)
+        return
+    }
   }
+
+  function countTotalFeedback() {
+    return good + neutral + bad;
+  }
+
+  function countPositiveFeedbackPercentage() {
+    return Math.round((good / countTotalFeedback() * 100) || 0);
+  }
+
+  return (
+    <FormWrapper>
+      <Section title={'Did you like our cafe? Please leave feedback.'} fontSize='50px'>
+        <FeedbackOptions options={[GOOD, NEUTRAL, BAD]} onClick={handleFeedbackClick} />
+      </Section>
+      {
+        countTotalFeedback()
+          ? (
+            <Section title={'Statistics'} fontSize='40px'>
+              <Statistics good={good}
+                          neutral={neutral}
+                          bad={bad}
+                          total={countTotalFeedback}
+                          positivePercentage={countPositiveFeedbackPercentage} />
+            </Section>
+          )
+          : <Notification message='We really wait for your feedback!' />
+      }
+    </FormWrapper>
+  );
 }

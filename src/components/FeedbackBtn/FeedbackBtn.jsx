@@ -16,14 +16,14 @@ const buttonSet = {
   },
 };
 
-
-export function FeedbackBtn({ feedbackType }) {
+export function FeedbackBtn({ feedbackType, onClick }) {
   return (
     <Button
       $color={buttonSet[feedbackType].color}
       type="button"
       aria-label={`${feedbackType} feedback`}
-      data-type={feedbackType}
+      name={feedbackType}
+      onClick={onClick}
     >
       {buttonSet[feedbackType].icon}
     </Button>
