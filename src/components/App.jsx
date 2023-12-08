@@ -25,6 +25,7 @@ export function App() {
       case BAD:
         setBad(bad + 1)
         return
+      default: return;
     }
   }
 
